@@ -1,4 +1,4 @@
-package io.github.daegwon.ticketing_system.service;
+package io.github.daegwon.ticketing_system.service.ticket_issue;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
