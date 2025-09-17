@@ -4,6 +4,10 @@ import io.github.daegwon.ticketing_system.enumerate.ErrorCode;
 import io.github.daegwon.ticketing_system.exception.TicketIssueException;
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -15,16 +19,27 @@ public class Ticket {
     private Long id;
 
     @Column(nullable = false)
-    private Integer total_quantity;
+    private String name;
 
-    @Column(nullable = false)
-    private Integer issued_quantity;
+    @Column(name = "total_quantity", nullable = false)
+    private Integer totalQuantity;
+
+    @Column(name = "issued_quantity", nullable = false)
+    private Integer issuedQuantity;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
     public void issue() {
-        if (total_quantity <= issued_quantity) {
+        if (totalQuantity <= issuedQuantity) {
             throw new TicketIssueException(ErrorCode.INVALID_TICKET_ISSUE_QUANTITY);
         }
 
-        issued_quantity++;
+        issuedQuantity++;
     }
 }
