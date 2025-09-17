@@ -1,8 +1,9 @@
-package io.github.daegwon.ticketing_system.service;
+package io.github.daegwon.ticketing_system.service.ticket_issue;
 
 import io.github.daegwon.ticketing_system.entity.Ticket;
 import io.github.daegwon.ticketing_system.entity.TicketIssue;
 import io.github.daegwon.ticketing_system.repository.TicketIssueRepository;
+import io.github.daegwon.ticketing_system.service.ticket.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

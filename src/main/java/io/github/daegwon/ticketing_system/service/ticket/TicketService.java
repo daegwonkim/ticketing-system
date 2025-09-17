@@ -1,4 +1,4 @@
-package io.github.daegwon.ticketing_system.service;
+package io.github.daegwon.ticketing_system.service.ticket;
 
 import io.github.daegwon.ticketing_system.entity.Ticket;
 import io.github.daegwon.ticketing_system.repository.TicketRepository;
