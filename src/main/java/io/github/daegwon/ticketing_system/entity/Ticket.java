@@ -37,6 +37,9 @@ public class Ticket {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    @Version
+    private Long version = 0L;
+
     public void issue() {
         if (totalQuantity <= issuedQuantity) {
             throw new TicketIssueException(ErrorCode.INVALID_TICKET_ISSUE_QUANTITY);
