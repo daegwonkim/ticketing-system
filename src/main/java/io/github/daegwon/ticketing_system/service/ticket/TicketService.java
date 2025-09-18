@@ -14,4 +14,8 @@ public class TicketService {
     public Ticket findById(Long id) {
         return ticketRepository.findById(id).orElseThrow();
     }
+
+    public Ticket findByIdWithLock(Long id) {
+        return ticketRepository.findByIdWithLock(id).orElseThrow();
+    }
 }

@@ -37,8 +37,8 @@ public class Ticket {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Version
-    private Long version = 0L;
+//    @Version
+//    private Long version = 0L;
 
     public void issue() {
         if (totalQuantity <= issuedQuantity) {
