@@ -1,0 +1,25 @@
+package io.github.daegwon.ticketing_system.service.ticket_issue;
+
+
+import io.github.daegwon.ticketing_system.annotation.DistributedLock;
+import io.github.daegwon.ticketing_system.entity.Ticket;
+import io.github.daegwon.ticketing_system.entity.TicketIssue;
+import io.github.daegwon.ticketing_system.repository.TicketIssueRepository;
+import io.github.daegwon.ticketing_system.service.ticket.TicketService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class TicketIssueServiceV5 {
+
+    private final TicketService ticketService;
+    private final TicketIssueRepository ticketIssueRepository;
+
+    @DistributedLock(key = "'ticket:' + #ticketId")
+    public void issueTicket(Long ticketId, Long userId) {
+        Ticket ticket = ticketService.findById(ticketId);
+        ticket.issue();
+        ticketIssueRepository.save(new TicketIssue(ticketId, userId));
+    }
+}
