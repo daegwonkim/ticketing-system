@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 /**
  * Redis 환경 설정
@@ -41,5 +42,16 @@ public class RedisConfig {
         Config config = new Config();
         config.useSingleServer().setAddress("redis://" + host + ":" + port);
         return Redisson.create(config);
+    }
+
+    /**
+     * StringRedisTemplate 등록
+     * @return StringRedisTemplate
+     */
+    @Bean
+    public StringRedisTemplate stringRedisTemplate() {
+        StringRedisTemplate redisTemplate = new StringRedisTemplate();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        return redisTemplate;
     }
 }

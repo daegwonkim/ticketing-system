@@ -4,6 +4,7 @@ import io.github.daegwon.ticketing_system.enumerate.ErrorCode;
 import io.github.daegwon.ticketing_system.exception.TicketIssueException;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -26,6 +27,7 @@ public class Ticket {
     @Column(name = "total_quantity", nullable = false)
     private Integer totalQuantity;
 
+    @Setter
     @Column(name = "issued_quantity", nullable = false)
     private Integer issuedQuantity;
 
