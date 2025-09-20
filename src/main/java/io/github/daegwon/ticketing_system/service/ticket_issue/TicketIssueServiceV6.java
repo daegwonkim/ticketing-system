@@ -10,10 +10,16 @@ import io.github.daegwon.ticketing_system.service.ticket.TicketService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,6 +31,7 @@ public class TicketIssueServiceV6 {
     private final TicketIssueRepository ticketIssueRepository;
 
     private final StringRedisTemplate stringRedisTemplate;
+    private final ResourceLoader resourceLoader;
     private RedisScript<Long> redisScript;
 
     @Value("${ticket.total-quantity}")
@@ -32,31 +39,19 @@ public class TicketIssueServiceV6 {
 
     @PostConstruct
     public void init() {
-        String TICKET_ISSUE_SCRIPT = """
-                -- KEYS[1]: 현재까지 발급된 티켓 수를 저장하는 키 (예: "ticket:1")
-                -- ARGV[1]: 최대 발급 가능 티켓 수
-                
-                local max_tickets = tonumber(ARGV[1])
-                
-                -- 현재까지 발급된 티켓 수 조회
-                local current_count = redis.call('GET', KEYS[1]) or 0
-                current_count = tonumber(current_count)
-                
-                -- 최대 발급 수량 체크
-                if current_count >= max_tickets then
-                    return 0
-                end
-                
-                -- 티켓 발급: 카운트 증가
-                local new_count = redis.call('INCR', KEYS[1])
-                return new_count
-                """;
-
-        this.redisScript = RedisScript.of(TICKET_ISSUE_SCRIPT, Long.class);
+        try {
+            Resource resource = resourceLoader.getResource("classpath:scripts/ticket-issue.lua");
+            String scriptContent = FileCopyUtils.copyToString(
+                    new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)
+            );
+            this.redisScript = RedisScript.of(scriptContent, Long.class);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load Redis Lua script", e);
+        }
     }
 
     public void issueTicket(Long ticketId, Long userId) {
-        String redisKey = String.format("ticket:%s'", ticketId);
+        String redisKey = String.format("ticket:%s", ticketId);
         List<String> keys = Collections.singletonList(redisKey);
 
         Long result = stringRedisTemplate.execute(redisScript, keys, String.valueOf(ticketTotalQuantity));
