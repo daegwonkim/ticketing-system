@@ -43,6 +43,12 @@ public class Ticket {
 //    private Long version = 0L;
 
     public void issue() {
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
         if (totalQuantity <= issuedQuantity) {
             throw new TicketIssueException(ErrorCode.INVALID_TICKET_ISSUE_QUANTITY);
         }
